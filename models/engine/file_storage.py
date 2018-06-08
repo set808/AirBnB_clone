@@ -4,6 +4,7 @@ Defines the FileStorage class
 '''
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 class FileStorage:
     '''Class that stores objects in JSON strings
@@ -13,7 +14,7 @@ class FileStorage:
     objects (dict): stores all objects by class
     '''
 
-    __file_path = '../file.json'
+    __file_path = 'file.json'
     __objects = {}
 
     def all(self):
