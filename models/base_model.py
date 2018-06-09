@@ -2,8 +2,10 @@
 '''
 Defines the class BaseModel
 '''
-import uuid, models
+import uuid
+import models
 from datetime import datetime
+
 
 class BaseModel:
     '''Defines all common attributes/methods for other classes
