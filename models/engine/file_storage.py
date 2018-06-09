@@ -5,6 +5,12 @@ Defines the FileStorage class
 import json
 from models.base_model import BaseModel
 from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+
 
 class FileStorage:
     '''Class that stores objects in JSON strings
@@ -53,3 +59,16 @@ class FileStorage:
                     FileStorage.__objects[k] = obj
         except FileNotFoundError:
             return
+
+    @classmethod
+    def get_object(cls, id=''):
+        '''Returns an object based on id
+
+        Return:
+        returns an object that matches id or prints an error on failure
+        '''
+        objects = cls.__objects
+        for obj in objects.values():
+            if obj.id == id:
+                return obj
+        print("id could not be matched")
