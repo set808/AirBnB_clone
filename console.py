@@ -4,8 +4,13 @@
 import cmd
 import readline
 import models
-User = models.user.User
 BaseModel = models.user.BaseModel
+User = models.user.User
+Place = models.place.Place
+State = models.state.State
+Amenity = models.amenity.Amenity
+Review = models.review.Review
+City = models.city.City
 storage = models.storage
 
 def strtoargs(argstr):
@@ -17,6 +22,8 @@ class HBNBCommand(cmd.Cmd):
     for command documentation.
     """
     prompt = '(HBNB) '
+    __validclasses = ["BaseModel", "User", "Place", "Amenity", "Review",
+                      "City", "State"]
 
     def do_create(self, arg):
         """Create an instance of a class.\
@@ -29,8 +36,34 @@ class HBNBCommand(cmd.Cmd):
             newmodel = BaseModel()
             print(newmodel.id)
             storage.new(newmodel)
+        elif arg[0] == "User":
+            newmodel = User()
+            print(newmodel.id)
+            storage.new(newmodel)
+        elif arg[0] == "Place":
+            newmodel = Place()
+            print(newmodel.id)
+            storage.new(newmodel)
+        elif arg[0] == "Amenity":
+            newmodel = Amenity()
+            print(newmodel.id)
+            storage.new(newmodel)
+        elif arg[0] == "Review":
+            newmodel = Review()
+            print(newmodel.id)
+            storage.new(newmodel)
+        elif arg[0] == "City":
+            newmodel = City()
+            print(newmodel.id)
+            storage.new(newmodel)
+        elif arg[0] == "State":
+            newmodel = State()
+            print(newmodel.id)
+            storage.new(newmodel)
         else:
             print("** class doesn't exist **")
+            return
+        storage.save()
 
     def do_show(self, arg):
         """Show an instance of a class.\
@@ -39,13 +72,14 @@ class HBNBCommand(cmd.Cmd):
         arg = strtoargs(arg)
         if len(arg) < 1:
             print("** class name missing **")
-        elif arg[0] in ["BaseModel"]:
+        elif arg[0] in self.__validclasses:
             if len(arg) < 2:
                 print("** instance id missing **")
             else:
                 print(str(storage.get_object(arg[1])))
         else:
             print("** class doesn't exist **")
+            return
 
     def do_destroy(self, arg):
         """Destroy a class instance by uuid.\
@@ -56,12 +90,13 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
             print(arg[0])
-            if arg[0] in ["BaseModel"]:
+            if arg[0] in self.__validclasses:
                 if len(arg) < 2:
                     print("** instance id missing **")
                 else:
                     try:
                         del storage.all()[arg[0] + "." + arg[1]]
+                        storage.save()
                     except KeyError:
                         print("** no instance found **")
             else:
@@ -77,7 +112,7 @@ class HBNBCommand(cmd.Cmd):
             print("[", end="")
             print(", ".join(str(objects[obj]) for obj in objects), end="]\n")
         else:
-            if arg[0] in ["BaseModel"]:
+            if arg[0] in self.__validclasses:
                 print("[", end="")
                 print(", ".join(str(objects[obj])
                                 for obj in objects
@@ -94,7 +129,7 @@ class HBNBCommand(cmd.Cmd):
         if len(arg) < 1:
             print("** class name missing **")
         else:
-            if arg[0] in ["BaseModel"]:
+            if arg[0] in self.__validclasses:
                 if len(arg) >= 2:
                     obj = storage.get_object(arg[1])
                     if storage.get_object(arg[1]):
@@ -105,6 +140,7 @@ class HBNBCommand(cmd.Cmd):
                         else:
                             """Might want to check invalid data type here"""
                             setattr(obj, arg[2], arg[3])
+                            storage.save()
                     else:
                         print("** no instance found **")
                 else:
