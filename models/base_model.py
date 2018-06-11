@@ -63,3 +63,14 @@ class BaseModel:
         self_dict['created_at'] = self.created_at.isoformat()
         self_dict['updated_at'] = self.updated_at.isoformat()
         return self_dict
+
+    @classmethod
+    def count(self):
+        '''Returns a count of instance objects'''
+        objects = models.storage.all()
+        count = 0
+
+        for obj in objects:
+            if obj.__class__.__name__ == self.__class__.__name__:
+                count += 1
+        return count
