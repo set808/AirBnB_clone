@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """Command line console for HBNB"""
 
+import shlex
+import json
 import cmd
 import readline
 import models
@@ -125,6 +127,7 @@ class HBNBCommand(cmd.Cmd):
         """Update an instance of a class based on uuid\
         Usage: update <classname> <uuid> <attribute> <value>\
         """
+        print(arg)
         arg = strtoargs(arg)
         if len(arg) < 1:
             print("** class name missing **")
@@ -147,6 +150,79 @@ class HBNBCommand(cmd.Cmd):
                     print("**instance id missing **")
             else:
                 print("** class doesn't exist **")
+
+    def default(self, line):
+        """Parse function style syntax for some commands. Regular error
+        message otherwise.
+        """
+        classname = line.split(".", 1)
+        if classname[0] in self.__validclasses:
+            methodname = classname[1].split("(", 1)
+            if methodname[0] in ["count", "all", "show", "destroy", "update"]:
+                args = shlex.split(methodname[1])
+                if methodname[0] == "show":
+                    if len(args) < 1:
+                        print("** id not found **")
+                    if args[0][-1] in '),':
+                        args[0] = args[0][:-1]
+                    args = classname[0] + " " +\
+                           " ".join(str(arg) for arg in args)
+                    return self.do_show(args)
+                if methodname[0] == "all":
+                    return self.do_all(classname[0])
+                if methodname[0] == "destroy":
+                    if len(args) < 1:
+                        print("** id not found **")
+                    print(args[0])
+                    args[0] = args[0][:-1]
+                    args = classname[0] + " " +\
+                           " ".join(str(arg) for arg in args)
+                    return self.do_destroy(args)
+                if methodname[0] == "count":
+                    print(eval(classname[0] + ".count()"))
+                    return 0
+                if methodname[0] == "update":
+                    if len(args) < 1:
+                        print("** id not found **")
+                        return
+                    if len(args) < 2:
+                        print("** attribute not found **")
+                        return
+                    if args[1][0] == "{":
+                        print(args)
+                        return self.update_dict(args)
+                    else:
+                        print("argsb: ", args)
+                        args = [arg[:-1] for arg in args]
+                        args = classname[0] + " " +\
+                               " ".join(str(arg) for arg in args)
+                        print("argsa: ", args)
+                        return self.do_update(args)
+            else:
+                print("** Unknown syntax:", line)
+        else:
+            print("** class doesn't exist **")
+
+    def update_dict(self, args):
+        """Loads dictionary from args string then updates instance.
+        Input args should be id then dict
+        """
+        dicty = '"' + " ".join(args[1:])[:-1] + '"'
+        print(dicty)
+        dicty = json.loads(dicty)
+        if type(dicty) is not dict:
+            print("** bad dictionary **")
+        else:
+            try:
+                obj = BaseModel.get_object(dicty[id])
+                if obj is None:
+                    print ("** id not found **")
+                    return
+            except KeyError:
+                print("** id is missing **")
+                return
+            for attr in dicty:
+                obj[attr] = dicty[attr]
 
     def do_quit(self, arg):
         """Quit the shell"""
