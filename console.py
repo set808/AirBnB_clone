@@ -139,7 +139,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         obj = storage.get_object(arg[1])
-        if storage.get_object(arg[1]):
+        if obj and obj.__class__.__name__ == arg[1]:
             if len(arg) < 3:
                 print("** attribute name missing **")
             elif len(arg) < 4:
