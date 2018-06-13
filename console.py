@@ -239,6 +239,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         """Quit the shell"""
+        print()
         return 1
 
     def emptyline(self):
