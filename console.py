@@ -92,7 +92,6 @@ class HBNBCommand(cmd.Cmd):
         if len(arg) < 1:
             print("** class name missing **")
         else:
-            print(arg[0])
             if arg[0] in self.__validclasses:
                 if len(arg) < 2:
                     print("** instance id missing **")
