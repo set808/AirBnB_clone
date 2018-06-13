@@ -15,10 +15,6 @@ Review = models.review.Review
 City = models.city.City
 storage = models.storage
 
-def strtoargs(argstr):
-    """convert a string to list of arguments"""
-    return argstr.split()
-
 class HBNBCommand(cmd.Cmd):
     """Command line console for HBNB. Use 'help' or '?' in console\
     for command documentation.
@@ -31,7 +27,7 @@ class HBNBCommand(cmd.Cmd):
         """Create an instance of a class.\
         Usage: create <classname>\
         """
-        arg = strtoargs(arg)
+        arg = shlex.split(arg)
         if len(arg) < 1:
             print("** class name missing **")
         elif arg[0] == "BaseModel":
@@ -71,14 +67,18 @@ class HBNBCommand(cmd.Cmd):
         """Show an instance of a class.\
         Usage: show <classname> <uuid>\
         """
-        arg = strtoargs(arg)
+        arg = shlex.split(arg)
         if len(arg) < 1:
             print("** class name missing **")
         elif arg[0] in self.__validclasses:
             if len(arg) < 2:
                 print("** instance id missing **")
             else:
-                print(str(storage.get_object(arg[1])))
+                obj = storage.get_object(arg[1])
+                if obj is None:
+                    print("** no instance found **")
+                else:
+                    print(str(obj))
         else:
             print("** class doesn't exist **")
             return
@@ -87,7 +87,7 @@ class HBNBCommand(cmd.Cmd):
         """Destroy a class instance by uuid.\
         Usage: destroy <classname> <uuid>\
         """
-        arg = strtoargs(arg)
+        arg = shlex.split(arg)
         if len(arg) < 1:
             print("** class name missing **")
         else:
@@ -108,7 +108,7 @@ class HBNBCommand(cmd.Cmd):
         """Print all instances of a class, or all instances with no args.\
         Usage: all [classname]\
         """
-        arg = strtoargs(arg)
+        arg = shlex.split(arg)
         objects = storage.all()
         if len(arg) < 1:
             print("[", end="")
@@ -128,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
         Usage: update <classname> <uuid> <attribute> <value>\
         """
         print(arg)
-        arg = strtoargs(arg)
+        arg = shlex.split(arg)
         if len(arg) < 1:
             print("** class name missing **")
         else:
@@ -151,78 +151,90 @@ class HBNBCommand(cmd.Cmd):
             else:
                 print("** class doesn't exist **")
 
+    def _do_count(self, arg):
+        """prints the number of a type of instance in storage.
+        Usage: count <classname>
+        """
+        shlex.split(arg)
+        arg = strtoargs(arg)
+        if len(arg) < 1:
+            print("** class name missing **")
+            return
+        count = 0
+        objects = storage.all()
+        for key in objects:
+            if objects[key].__class__.__name__ == arg[0]:
+                count += 1
+        print(count)
+        
     def default(self, line):
         """Parse function style syntax for some commands. Regular error
         message otherwise.
         """
         classname = line.split(".", 1)
-        if classname[0] in self.__validclasses:
-            methodname = classname[1].split("(", 1)
-            if methodname[0] in ["count", "all", "show", "destroy", "update"]:
-                args = shlex.split(methodname[1])
-                if methodname[0] == "show":
-                    if len(args) < 1:
-                        print("** id not found **")
-                    if args[0][-1] in '),':
-                        args[0] = args[0][:-1]
-                    args = classname[0] + " " +\
-                           " ".join(str(arg) for arg in args)
-                    return self.do_show(args)
-                if methodname[0] == "all":
-                    return self.do_all(classname[0])
-                if methodname[0] == "destroy":
-                    if len(args) < 1:
-                        print("** id not found **")
-                    print(args[0])
-                    args[0] = args[0][:-1]
-                    args = classname[0] + " " +\
-                           " ".join(str(arg) for arg in args)
-                    return self.do_destroy(args)
-                if methodname[0] == "count":
-                    print(eval(classname[0] + ".count()"))
-                    return 0
-                if methodname[0] == "update":
-                    if len(args) < 1:
-                        print("** id not found **")
-                        return
-                    if len(args) < 2:
-                        print("** attribute not found **")
-                        return
-                    if args[1][0] == "{":
-                        print(args)
-                        return self.update_dict(args)
-                    else:
-                        print("argsb: ", args)
-                        args = [arg[:-1] for arg in args]
-                        args = classname[0] + " " +\
-                               " ".join(str(arg) for arg in args)
-                        print("argsa: ", args)
-                        return self.do_update(args)
-            else:
-                print("** Unknown syntax:", line)
-        else:
+        if len(classname) < 2:
+            print("** Unknown syntax:", line)
+            return
+        if classname[0] not in self.__validclasses:
             print("** class doesn't exist **")
+            return
+        methodname = classname[1].split("(", 1)
+        if methodname[0] not in ["count", "all", "show", "destroy", "update"]\
+           or len(methodname) < 2:
+            print("** Unknown syntax:", line)
+            return
+        methodname[1] = methodname[1].strip()
+        if len(methodname[1]) < 1 or methodname[1][-1] != ')':
+            print("** Unknown syntax:", line)
+            return
+        args = methodname[1][:-1]
+        if methodname[0] == "show":
+            return self.do_show(classname[0] + " " + args)
+        if methodname[0] == "all":
+            return self.do_all(classname[0])
+        if methodname[0] == "destroy":
+            return self.do_destroy(classname[0] + " " + args)
+        if methodname[0] == "count":
+            return self._do_count(classname[0] + " " + args)
+        if methodname[0] == "update":
+            print(args)
+            if len(args) < 1:
+                print("** id not found **")
+                return
+            attrchk = args.split(",", 1)
+            if len(attrchk) < 2:
+                print("** attribute not found **")
+                return
+            print(attrchk)
+            if attrchk[1].strip()[0] == "{":
+                print(args)
+                return self.update_dict(args)
+            else:
+                args = args.split(",", 2)
+                return self.do_update(" ".join([classname[0]] + args))
 
     def update_dict(self, args):
         """Loads dictionary from args string then updates instance.
         Input args should be id then dict
         """
-        dicty = '"' + " ".join(args[1:])[:-1] + '"'
-        print(dicty)
-        dicty = json.loads(dicty)
-        if type(dicty) is not dict:
+        args = args.split(",", 1)
+        try:
+            dicty = json.loads(args[1])
+            print(dicty)
+            print(type(dicty))
+            if type(dicty) is not dict:
+                print("** bad dictionary **")
+        except json.decoder.JSONDecodeError:
             print("** bad dictionary **")
+            return
         else:
-            try:
-                obj = BaseModel.get_object(dicty[id])
-                if obj is None:
-                    print ("** id not found **")
-                    return
-            except KeyError:
-                print("** id is missing **")
+            obj = storage.get_object(args[0])
+            print(obj)
+            if obj is None:
+                print ("** id not found **")
                 return
             for attr in dicty:
-                obj[attr] = dicty[attr]
+                exec("obj." + attr + " = dicty[attr]")
 
     def do_quit(self, arg):
         """Quit the shell"""
