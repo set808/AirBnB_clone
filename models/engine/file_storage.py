@@ -79,4 +79,3 @@ class FileStorage:
         for obj in objects.values():
             if obj.id == id:
                 return obj
-        print("id could not be matched")
