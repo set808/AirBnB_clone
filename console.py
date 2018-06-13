@@ -111,15 +111,16 @@ class HBNBCommand(cmd.Cmd):
         arg = shlex.split(arg)
         objects = storage.all()
         if len(arg) < 1:
-            print("[", end="")
-            print(", ".join(str(objects[obj]) for obj in objects), end="]\n")
+            print("[\"", end="")
+            print("\", \"".join(str(objects[obj]) for obj in objects),
+                  end="\"]\n")
         else:
             if arg[0] in self.__validclasses:
-                print("[", end="")
-                print(", ".join(str(objects[obj])
+                print("[\"", end="")
+                print("\", \"".join(str(objects[obj])
                                 for obj in objects
                                 if objects[obj].__class__.__name__ == arg[0]),
-                      end="]\n")
+                      end="\"]\n")
             else:
                 print("** class doesn't exist **")
 
@@ -242,6 +243,7 @@ class HBNBCommand(cmd.Cmd):
         return 1
 
     def emptyline(self):
+        """Don't do anything if there's an empty line"""
         return 0
 
 if __name__ == "__main__":
