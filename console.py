@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Command line console for HBNB"""
 
+
 import ast
 import shlex
 import json
@@ -15,6 +16,7 @@ Amenity = models.amenity.Amenity
 Review = models.review.Review
 City = models.city.City
 storage = models.storage
+
 
 class HBNBCommand(cmd.Cmd):
     """Command line console for HBNB. Use 'help' or '?' in console
@@ -113,7 +115,7 @@ class HBNBCommand(cmd.Cmd):
         if len(arg) < 1:
             print("[\"", end="")
             print("\", \"".join(str(objects[obj])
-                           for obj in objects), end="")
+                                for obj in objects), end="")
             print("\"]")
         else:
             if arg[0] in self.__validclasses:
@@ -222,13 +224,13 @@ class HBNBCommand(cmd.Cmd):
             dicty = ast.literal_eval(args[1].strip())
             if type(dicty) is not dict:
                 print("** bad dictionary **")
-        except:
+        except Exception:
             print("** bad dictionary **")
             return
         else:
             obj = storage.get_object(args[0].strip("'\""))
             if obj is None:
-                print ("** id not found **")
+                print("** id not found **")
                 return
             for attr in dicty:
                 setattr(obj, attr, dicty[attr])
@@ -245,6 +247,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Don't do anything if there's an empty line"""
         return 0
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
