@@ -146,7 +146,10 @@ class HBNBCommand(cmd.Cmd):
                 print("** value missing **")
             else:
                 """Might want to check invalid data type here"""
-                setattr(obj, arg[2], arg[3])
+                try:
+                    setattr(obj, arg[2], ast.literal_eval(arg[3].strip()))
+                except (ValueError, SyntaxError):
+                    setattr(obj, arg[2], arg[3])
                 storage.save()
         else:
             print("** no instance found **")
