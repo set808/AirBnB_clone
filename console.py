@@ -128,7 +128,6 @@ class HBNBCommand(cmd.Cmd):
         """Update an instance of a class based on uuid
         Usage: update <classname> <uuid> <attribute> <value>
         """
-        print(arg)
         arg = shlex.split(arg)
         if len(arg) < 1:
             print("** class name missing **")
