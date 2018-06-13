@@ -71,18 +71,18 @@ class HBNBCommand(cmd.Cmd):
         arg = shlex.split(arg)
         if len(arg) < 1:
             print("** class name missing **")
-        elif arg[0] in self.__validclasses:
-            if len(arg) < 2:
-                print("** instance id missing **")
-            else:
-                obj = storage.get_object(arg[1])
-                if obj is None:
-                    print("** no instance found **")
-                else:
-                    print(str(obj))
-        else:
+            return
+        if arg[0] not in self.__validclasses:
             print("** class doesn't exist **")
             return
+        if len(arg) < 2:
+            print("** instance id missing **")
+        else:
+            obj = storage.get_object(arg[1])
+            if obj is None:
+                print("** no instance found **")
+            else:
+                print(str(obj))
 
     def do_destroy(self, arg):
         """Destroy a class instance by uuid.
@@ -148,7 +148,7 @@ class HBNBCommand(cmd.Cmd):
                     else:
                         print("** no instance found **")
                 else:
-                    print("**instance id missing **")
+                    print("** instance id missing **")
             else:
                 print("** class doesn't exist **")
 
