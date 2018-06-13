@@ -155,8 +155,7 @@ class HBNBCommand(cmd.Cmd):
         """prints the number of a type of instance in storage.
         Usage: count <classname>
         """
-        shlex.split(arg)
-        arg = strtoargs(arg)
+        arg = shlex.split(arg)
         if len(arg) < 1:
             print("** class name missing **")
             return
@@ -195,7 +194,7 @@ class HBNBCommand(cmd.Cmd):
         if methodname[0] == "destroy":
             return self.do_destroy(classname[0] + " " + args)
         if methodname[0] == "count":
-            return self._do_count(classname[0] + " " + args)
+            return self._do_count(classname[0])
         if methodname[0] == "update":
             print(args)
             if len(args) < 1:
