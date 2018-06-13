@@ -1,0 +1,9 @@
+show BaseModel 2f586884-570f-4549-a60f-86c018fcfca7
+show User c363c8a9-3acf-4ca2-9200-a63e634ab1c0
+show User 1bb40bcf-4c92-4e22-9cb2-9966c6a9d76d
+show User d77fa182-52c7-4f9f-8208-12fa8cd32dfe
+show Place f408864b-392e-41cf-9bb4-eaccd3a91b15
+show Review f408864b-392e-41cf-9bb4-eaccd3a91b15
+show Amenity dfdfa150-8c76-4aec-a9d5-89e1d28cfb6d
+show State a565584f-75aa-4a11-9c5b-23ca9a1c326d
+show City 318a13c7-37d9-463e-b07a-8f044fc74db8
