@@ -16,16 +16,16 @@ City = models.city.City
 storage = models.storage
 
 class HBNBCommand(cmd.Cmd):
-    """Command line console for HBNB. Use 'help' or '?' in console\
+    """Command line console for HBNB. Use 'help' or '?' in console
     for command documentation.
     """
-    prompt = '(HBNB) '
+    prompt = '(hbnb) '
     __validclasses = ["BaseModel", "User", "Place", "Amenity", "Review",
                       "City", "State"]
 
     def do_create(self, arg):
-        """Create an instance of a class.\
-        Usage: create <classname>\
+        """Create an instance of a class.
+        Usage: create <classname>
         """
         arg = shlex.split(arg)
         if len(arg) < 1:
@@ -64,8 +64,8 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_show(self, arg):
-        """Show an instance of a class.\
-        Usage: show <classname> <uuid>\
+        """Show an instance of a class.
+        Usage: show <classname> <uuid>
         """
         arg = shlex.split(arg)
         if len(arg) < 1:
@@ -84,8 +84,8 @@ class HBNBCommand(cmd.Cmd):
             return
 
     def do_destroy(self, arg):
-        """Destroy a class instance by uuid.\
-        Usage: destroy <classname> <uuid>\
+        """Destroy a class instance by uuid.
+        Usage: destroy <classname> <uuid>
         """
         arg = shlex.split(arg)
         if len(arg) < 1:
@@ -105,8 +105,8 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
 
     def do_all(self, arg):
-        """Print all instances of a class, or all instances with no args.\
-        Usage: all [classname]\
+        """Print all instances of a class, or all instances with no args.
+        Usage: all [classname]
         """
         arg = shlex.split(arg)
         objects = storage.all()
@@ -124,8 +124,8 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
 
     def do_update(self, arg):
-        """Update an instance of a class based on uuid\
-        Usage: update <classname> <uuid> <attribute> <value>\
+        """Update an instance of a class based on uuid
+        Usage: update <classname> <uuid> <attribute> <value>
         """
         print(arg)
         arg = shlex.split(arg)
