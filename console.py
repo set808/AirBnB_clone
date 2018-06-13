@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Command line console for HBNB"""
 
+import ast
 import shlex
 import json
 import cmd
@@ -165,7 +166,7 @@ class HBNBCommand(cmd.Cmd):
             if objects[key].__class__.__name__ == arg[0]:
                 count += 1
         print(count)
-        
+
     def default(self, line):
         """Parse function style syntax for some commands. Regular error
         message otherwise.
@@ -196,7 +197,6 @@ class HBNBCommand(cmd.Cmd):
         if methodname[0] == "count":
             return self._do_count(classname[0])
         if methodname[0] == "update":
-            print(args)
             if len(args) < 1:
                 print("** id not found **")
                 return
@@ -204,9 +204,7 @@ class HBNBCommand(cmd.Cmd):
             if len(attrchk) < 2:
                 print("** attribute not found **")
                 return
-            print(attrchk)
             if attrchk[1].strip()[0] == "{":
-                print(args)
                 return self.update_dict(args)
             else:
                 args = args.split(",", 2)
@@ -217,23 +215,24 @@ class HBNBCommand(cmd.Cmd):
         Input args should be id then dict
         """
         args = args.split(",", 1)
+        print(args)
         try:
-            dicty = json.loads(args[1])
-            print(dicty)
-            print(type(dicty))
+            dicty = ast.literal_eval(args[1].strip())
             if type(dicty) is not dict:
                 print("** bad dictionary **")
-        except json.decoder.JSONDecodeError:
+        except:
             print("** bad dictionary **")
             return
         else:
-            obj = storage.get_object(args[0])
+            obj = storage.get_object(args[0].strip("'\""))
             print(obj)
             if obj is None:
                 print ("** id not found **")
                 return
             for attr in dicty:
-                exec("obj." + attr + " = dicty[attr]")
+                print(attr)
+                print(type(attr))
+                setattr(obj, attr, dicty[attr])
 
     def do_quit(self, arg):
         """Quit the shell"""
