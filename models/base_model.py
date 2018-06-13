@@ -23,18 +23,19 @@ class BaseModel:
         time_format = '%Y-%m-%dT%H:%M:%S.%f'
         if kwargs:
             for k, v in kwargs.items():
-                if 'id' in kwargs.keys():
-                    self.id = kwargs['id']
-                elif 'created_at' in kwargs.keys():
-                    self.created_at = datetime.strptime(kwargs['created_at'],
-                                                        time_format)
-                elif 'updated_at' in kwargs.keys():
-                    self.updated_at = datetime.strptime(kwargs['updated_at'],
-                                                        time_format)
-                elif '__class__':
+                if k == "__class__":
                     pass
                 else:
                     setattr(self, k, v)
+            if 'id' in kwargs.keys():
+                self.id = kwargs['id']
+            if 'created_at' in kwargs.keys():
+                self.created_at = datetime.strptime(kwargs['created_at'],
+                                                    time_format)
+            if 'updated_at' in kwargs.keys():
+                self.updated_at = datetime.strptime(kwargs['updated_at'],
+                                                    time_format)
+
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
