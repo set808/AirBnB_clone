@@ -131,25 +131,25 @@ class HBNBCommand(cmd.Cmd):
         arg = shlex.split(arg)
         if len(arg) < 1:
             print("** class name missing **")
-        else:
-            if arg[0] in self.__validclasses:
-                if len(arg) >= 2:
-                    obj = storage.get_object(arg[1])
-                    if storage.get_object(arg[1]):
-                        if len(arg) < 3:
-                            print("** attribute name missing **")
-                        elif len(arg) < 4:
-                            print("** value missing **")
-                        else:
-                            """Might want to check invalid data type here"""
-                            setattr(obj, arg[2], arg[3])
-                            storage.save()
-                    else:
-                        print("** no instance found **")
-                else:
-                    print("** instance id missing **")
+            return
+        if arg[0] not in self.__validclasses:
+            print("** class doesn't exist **")
+            return
+        if len(arg) < 2:
+            print("** instance id missing **")
+            return
+        obj = storage.get_object(arg[1])
+        if storage.get_object(arg[1]):
+            if len(arg) < 3:
+                print("** attribute name missing **")
+            elif len(arg) < 4:
+                print("** value missing **")
             else:
-                print("** class doesn't exist **")
+                """Might want to check invalid data type here"""
+                setattr(obj, arg[2], arg[3])
+                storage.save()
+        else:
+            print("** no instance found **")
 
     def _do_count(self, arg):
         """prints the number of a type of instance in storage.
@@ -214,7 +214,6 @@ class HBNBCommand(cmd.Cmd):
         Input args should be id then dict
         """
         args = args.split(",", 1)
-        print(args)
         try:
             dicty = ast.literal_eval(args[1].strip())
             if type(dicty) is not dict:
@@ -224,13 +223,10 @@ class HBNBCommand(cmd.Cmd):
             return
         else:
             obj = storage.get_object(args[0].strip("'\""))
-            print(obj)
             if obj is None:
                 print ("** id not found **")
                 return
             for attr in dicty:
-                print(attr)
-                print(type(attr))
                 setattr(obj, attr, dicty[attr])
 
     def do_quit(self, arg):
