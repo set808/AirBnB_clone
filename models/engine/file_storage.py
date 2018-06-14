@@ -58,7 +58,9 @@ class FileStorage:
             json.dump(save_dict, f)
 
     def reload(self):
-        '''Deserialize the JSON file to __objects'''
+        '''Deserialize the JSON file to __objects
+
+        '''
         try:
             with open(FileStorage.__file_path, 'r') as f:
                 dicts = json.load(f)
@@ -80,3 +82,4 @@ class FileStorage:
             if obj.id == id:
                 return obj
         print("id could not be matched")
+    
