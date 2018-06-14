@@ -203,7 +203,7 @@ class HBNBCommand(cmd.Cmd):
             return self._do_count(classname[0])
         if methodname[0] == "update":
             if len(args) < 1:
-                print("** id not found **")
+                print("** no instance found **")
                 return
             attrchk = args.split(",", 1)
             if len(attrchk) < 2:
@@ -229,7 +229,7 @@ class HBNBCommand(cmd.Cmd):
             return
         else:
             obj = storage.get_object(args[0].strip("'\""))
-            if obj is None:
+            if obj is None or obj.__class__.__name__ != arg[0]:
                 print("** id not found **")
                 return
             for attr in dicty:
