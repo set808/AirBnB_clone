@@ -153,7 +153,7 @@ class HBNBCommand(cmd.Cmd):
                     setattr(obj, arg[2], ast.literal_eval(arg[3].strip()))
                 except (ValueError, SyntaxError):
                     setattr(obj, arg[2], arg[3])
-                storage.save()
+                obj.save()
         else:
             print("** no instance found **")
 
