@@ -119,4 +119,3 @@ class TestConsole(unittest.TestCase):
         ids = ids.split("\n")
         objects = storage.all()
         for obj in objects:
-            
