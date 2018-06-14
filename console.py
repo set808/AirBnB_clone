@@ -81,7 +81,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
         else:
             obj = storage.get_object(arg[1])
-            if obj is None:
+            if obj is None or obj.__class__.__name__ != arg[0]:
                 print("** no instance found **")
             else:
                 print(str(obj))
