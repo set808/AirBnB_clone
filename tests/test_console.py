@@ -11,6 +11,7 @@ import io
 from contextlib import redirect_stdout
 from models.engine.file_storage import FileStorage
 
+
 class TestConsole(unittest.TestCase):
     """Tests for the console"""
 
@@ -18,7 +19,7 @@ class TestConsole(unittest.TestCase):
     def setUp(self):
         try:
             os.remove("file.json")
-        except:
+        except Exception:
             pass
 
     def test_all(self):
@@ -38,6 +39,9 @@ class TestConsole(unittest.TestCase):
         g = open("./tests/inallresult.txt")
         self.assertEqual(g.read(), outbuffer.getvalue())
         g.close()
+        teststore.save()
+        self.assertEqual(json.load("./tests/allfile.json"),
+                         json.load("./file.json"))
 
     def test_allargs(self):
         """Test all command with args"""
@@ -56,6 +60,9 @@ class TestConsole(unittest.TestCase):
         g = open("./tests/inallindresult.txt")
         self.assertEqual(g.read(), outbuffer.getvalue())
         g.close()
+        teststore.save()
+        self.assertEqual(json.load("./tests/allfile.json"),
+                         json.load("./file.json"))
 
     def test_show(self):
         """Test good show commands"""
@@ -74,6 +81,9 @@ class TestConsole(unittest.TestCase):
         g = open("./tests/inshowresult.txt")
         self.assertEqual(g.read(), outbuffer.getvalue())
         g.close()
+        teststore.save()
+        self.assertEqual(json.load("./tests/allfile.json"),
+                         json.load("./file.json"))
 
     def test_showbad(self):
         """Test bad show commands"""
@@ -92,3 +102,21 @@ class TestConsole(unittest.TestCase):
         g = open("./tests/inshowbadresult.txt")
         self.assertEqual(g.read(), outbuffer.getvalue())
         g.close()
+        teststore.save()
+        self.assertEqual(json.load("./tests/allfile.json"),
+                         json.load("./file.json"))
+
+    def test_create(self):
+        """Tests well-behaved create commands. Assumes correct uuid output"""
+        f = open("./tests/increatetest.txt", "r")
+        cmdp = console.HBNBCommand(stdin=f, stdout=outbuffer)
+        cmdp.use_rawinput = False
+        cmdp.prompt = ""
+        with redirect_stdout(outbuffer):
+            cmdp.cmdloop()
+        f.close()
+        ids = outbuffer.getvalue()
+        ids = ids.split("\n")
+        objects = storage.all()
+        for obj in objects:
+            
