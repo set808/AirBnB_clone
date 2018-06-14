@@ -44,10 +44,11 @@ class TestConsole(unittest.TestCase):
                          json.load("./file.json"))
 
     def test_allargs(self):
-        """Test all command with args"""
+        """Test all command with args, such as all BaseModel"""
         self.maxDiff = None
         shutil.copy("./tests/allfile.json", "./file.json")
         teststore = FileStorage()
+        "all BaseModel"
         teststore.reload()
         outbuffer = io.StringIO()
         f = open("./tests/inallindtest.txt", "r")
@@ -118,4 +119,3 @@ class TestConsole(unittest.TestCase):
         ids = outbuffer.getvalue()
         ids = ids.split("\n")
         objects = storage.all()
-        for obj in objects:
