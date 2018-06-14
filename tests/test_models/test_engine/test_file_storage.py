@@ -6,6 +6,7 @@ import unittest
 import pep8
 import json
 import os
+import shutil
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -33,7 +34,7 @@ class TestFileStorage(unittest.TestCase):
     def teardown(self):
         try:
             os.remove("file.json")
-        except:
+        except Exception:
             pass
 
     def test_style_check(self):
@@ -65,17 +66,16 @@ class TestFileStorage(unittest.TestCase):
         melissa.name = "Melissa"
         m_storage.new(melissa)
         key = melissa.__class__.__name__ + "." + str(melissa.id)
-        #print(instances_dic[key])
         self.assertIsNotNone(instances_dic[key])
 
-    def test_reload(self):
+    def test_reload_empty(self):
         """
         Tests method: reload (reloads objects from string file)
         """
         a_storage = FileStorage()
         try:
             os.remove("file.json")
-        except:
+        except Exception:
             pass
         with open("file.json", "w") as f:
             f.write("{}")
@@ -83,3 +83,21 @@ class TestFileStorage(unittest.TestCase):
             for line in r:
                 self.assertEqual(line, "{}")
         self.assertIs(a_storage.reload(), None)
+
+    def test_reload(self):
+        """
+        Tests method: reload (reloads objects from string file)
+        """
+        self.maxDiff = None
+        a_storage = FileStorage()
+        try:
+            os.remove("file.json")
+        except Exception:
+            pass
+        shutil.copy("./tests/test_models/test_engine/allin.txt", "./file.json")
+        with open("./file.json") as f:
+            dicts = json.load(f)
+        a_storage.reload()
+        objs = a_storage.all()
+        for key in dicts:
+            self.assertEqual(objs[key].to_dict(), dicts[key])
