@@ -210,12 +210,12 @@ class HBNBCommand(cmd.Cmd):
                 print("** attribute not found **")
                 return
             if attrchk[1].strip()[0] == "{":
-                return self.update_dict(args)
+                return self.update_dict(args, classname[0])
             else:
                 args = args.split(",", 2)
                 return self.do_update(" ".join([classname[0]] + args))
 
-    def update_dict(self, args):
+    def update_dict(self, args, classname):
         """Loads dictionary from args string then updates instance.
         Input args should be id then dict
         """
@@ -229,8 +229,8 @@ class HBNBCommand(cmd.Cmd):
             return
         else:
             obj = storage.get_object(args[0].strip("'\""))
-            if obj is None or obj.__class__.__name__ != arg[0]:
-                print("** id not found **")
+            if obj is None or obj.__class__.__name__ != classname:
+                print("** no instance found **")
                 return
             for attr in dicty:
                 setattr(obj, attr, dicty[attr])
