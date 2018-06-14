@@ -48,7 +48,7 @@ class TestConsole(unittest.TestCase):
         self.maxDiff = None
         shutil.copy("./tests/allfile.json", "./file.json")
         teststore = FileStorage()
-        "all BaseModel"
+        "BaseModel.count()"
         teststore.reload()
         outbuffer = io.StringIO()
         f = open("./tests/inallindtest.txt", "r")
